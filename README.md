@@ -16,6 +16,7 @@ Designing and developing an efficient employee management system is crucial for 
 - Admin can change or add an employee as a manager of a department.
 - Admin can increase or decrease the salary of each employee depending on the year of experience
 - Admin can change the department of an employee
+- Here the **Admin means** the one who created the Organization.
 - They have options to update any relevent details they want.
 
 ### Technical Explanation
