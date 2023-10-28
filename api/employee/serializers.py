@@ -7,32 +7,44 @@ from ..models import *
 User Serializer
 """
 class EmployeeSerializer(serializers.ModelSerializer):
-    department_id = serializers.ReadOnlyField()
-
+    employee_id = serializers.ReadOnlyField()
+    user = serializers.CharField(required=False)
     def create(self, validated_data):
-        org = self.context.get('organization')
-        validated_data['organization'] = org
-        return Department.objects.create(**validated_data)
+        dept = self.context.get('department')
+        validated_data['department'] = dept
+        user = validated_data.get('user',None)
+        if user != None:
+            user = CustomUser.objects.filter(username=user).first()
+            validated_data['user'] = user
+        return Employee.objects.create(**validated_data)
     class Meta:
-        model = Department
-        fields = ['department_id','name','location','manager']
+        model = Employee
+        fields = ['employee_id','name','email','contact','date_of_joining','experience','salary','user']
 
-class DepartmentUpdateSerializer(serializers.ModelSerializer):
-    department_id = serializers.ReadOnlyField()
+class EmployeeUpdateSerializer(serializers.ModelSerializer):
+    employee_id = serializers.ReadOnlyField()
     name = serializers.CharField(required=False)
-    location = serializers.CharField(required=False)
-    manager = serializers.IntegerField(required=False)
+    email = serializers.CharField(required=False)
+    contact = serializers.CharField(required=False)
+    date_of_joining = serializers.DateTimeField(required=False)
+    experience = serializers.IntegerField(required=False)
+    salary = serializers.IntegerField(required=False)
+    user = serializers.CharField(required=False)
 
     def update(self, instance, validated_data):  
         instance.name = validated_data.get('name',instance.name)
-        instance.location = validated_data.get('location',instance.location)
-        manager = validated_data.get('manager',None)
-        if manager != None:
-            manager = Employee.objects.filter(employee_id=manager).first()
-            instance.manager = manager
+        instance.email = validated_data.get('email',instance.email)
+        instance.contact = validated_data.get('contact',instance.contact)
+        instance.date_of_joining = validated_data.get('date_of_joining',instance.date_of_joining)
+        instance.experience = validated_data.get('experience',instance.experience)
+        instance.salary = validated_data.get('salary',instance.salary)
+        user = validated_data.get('user',None)
+        if user != None:
+            user = CustomUser.objects.filter(username=user).first()
+            instance.user = user
         instance.save()  
         return instance  
     class Meta:
-        model = Department
-        fields = ['department_id','name','location','manager']
+        model = Employee
+        fields = ['employee_id','name','email','contact','date_of_joining','experience','salary','user']
 
