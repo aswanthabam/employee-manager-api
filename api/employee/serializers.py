@@ -1,7 +1,7 @@
 # apps/management/api/serializers.py
 
 from rest_framework import serializers,validators
-from .models import *
+from ..models import *
 
 """
 User Serializer

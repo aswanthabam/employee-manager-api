@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from datetime import datetime
 from .serializers import *
 from .authentication import JWTAuthentication
-from .models import CustomUser as User
+from ..models import CustomUser as User
 from django.db.models import Q
 
 from rest_framework.decorators import api_view, permission_classes
@@ -19,7 +19,6 @@ class UserRegistrationView(views.APIView):
         else:  
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST) 
       except Exception as e:
-          raise e
           return Response({"status":"internal-error","message":"An unexpected error occured"})
         
  
