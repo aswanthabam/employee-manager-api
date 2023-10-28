@@ -3,7 +3,8 @@ from .views import *
 from rest_framework import routers 
 
 urlpatterns = [
-    #path('auth/token', ObtainTokenView.as_view()),
-    path('register/',UserRegistrationView.as_view()),
-    path('token/',ObtainTokenView.as_view()),
+    path('',EmployeeView.as_view()),
+    path('create/',EmployeeView.as_view()),
+    path('update/',EmployeeView.as_view()),
+    path('delete/',EmployeeView.as_view())
 ]

@@ -9,18 +9,24 @@ from django.db.models import Q
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
-class OrganizationView(views.APIView):
+class DepartmentView(views.APIView):
     permission_classes = [IsAuthenticated]
-    def get(self,request):
+    def get(self,request,organization_id):
         try:
-            orgs = Organization.objects.filter(user=request.user)
-            serializer = OrganizationSerializer(orgs,many=True,context={'user':request.user}) 
+            org = Organization.objects.filter(organization_id=organization_id,user=request.user).first()
+            if org == None:
+               return Response({"status": "success", "message":"Invalid organization"}, status=status.HTTP_400_OK) 
+            depts = Department.objects.filter(organization=org)
+            serializer = DepartmentSerializer(depts,many=True,context={'user':request.user})
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK) 
         except Exception as e:
             return Response({"status":"internal-error","message":"An unexpected error occured"})
-    def post(self, request):
+    def post(self, request,organization_id):
       try:
-        serializer = OrganizationSerializer(data=request.data,context={'user':request.user}) 
+        org = Organization.objects.filter(organization_id=organization_id,user=request.user).first()
+        if org == None:
+            return Response({"status": "success", "message":"Invalid organization"}, status=status.HTTP_400_OK)
+        serializer = DepartmentSerializer(data=request.data,context={'organization':org})
         if serializer.is_valid():  
             serializer.save() 
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)  
@@ -29,15 +35,16 @@ class OrganizationView(views.APIView):
       except Exception as e:
           return Response({"status":"internal-error","message":"An unexpected error occured"})
 
-    def put(self, request):
+    def put(self, request,organization_id):
       try:
-        instance = Organization.objects.filter(organization_id = request.data.get('organization_id')).first()
+        org = Organization.objects.filter(organization_id=organization_id,user=request.user).first()
+        if org == None:
+            return Response({"status": "success", "message":"Invalid organization"}, status=status.HTTP_400_OK)
+        instance = Department.objects.filter(department_id = request.data.get('department_id'),organization=org).first()
         if instance == None:
            return Response({'status':'error','message':'invalid org id'})
-        elif instance.user.username != request.user.username:
-           return Response({'status':'error','message':'not allowed to edit this user'})
         
-        serializer = OrganizationUpdateSerializer(instance,data=request.data) 
+        serializer = DepartmentUpdateSerializer(instance,data=request.data) 
         if serializer.is_valid():  
             serializer.save() 
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)  
@@ -47,13 +54,14 @@ class OrganizationView(views.APIView):
           return Response({"status":"internal-error","message":"An unexpected error occured"})
 
 
-    def delete(self, request):
+    def delete(self, request,organization_id):
       try:
-        instance = Organization.objects.filter(organization_id = request.data.get('organization_id')).first()
+        org = Organization.objects.filter(organization_id=organization_id,user=request.user).first()
+        if org == None:
+            return Response({"status": "success", "message":"Invalid organization"}, status=status.HTTP_400_OK)
+        instance = Department.objects.filter(department_id = request.data.get('department_id'),organization=org).first()
         if instance == None:
-           return Response({'status':'error','message':'invalid org id'})
-        elif instance.user.username != request.user.username:
-           return Response({'status':'error','message':'not allowed to edit this user'})
+           return Response({'status':'error','message':'invalid dept id'})
         instance.delete()
         return Response({"status": "success", "message":"successfully deleted organization"}, status=status.HTTP_200_OK) 
       except Exception as e:

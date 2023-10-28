@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
   first_name = models.CharField(max_length=200,null=False,blank=False)
   last_name = models.CharField(max_length=100,null=False,blank=False)
   email = models.EmailField(unique=True,null=False,blank=False)
-  user_type = models.CharField(max_length=20,choices=(('ORG','Organization'),('EMP','Employee'),('MAN','Manager')))
+  user_type = models.CharField(max_length=20,choices=(('ORG','Organization'),('USR','User')))
   REQUIRED_FIELDS = ('first_name','last_name','email','password','user_type') 
 
 class Organization(models.Model):
@@ -28,10 +28,11 @@ class Employee(models.Model):
     contact = models.TextField(null=False, blank=False)
     date_of_joining = models.DateTimeField(null=False, blank=False)
     experience = models.IntegerField(null=True, blank=True)
-    department = models.ForeignKey('api.Department', on_delete=models.CASCADE,null=True,blank=False)
+    salary = models.IntegerField(null=False,blank=False)
     
+    department = models.ForeignKey('api.Department', on_delete=models.CASCADE,null=True,blank=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,null=True,blank=False)
-
+    
     def __str__(self):
         return self.name
 

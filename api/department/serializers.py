@@ -6,7 +6,7 @@ from ..models import *
 """
 User Serializer
 """
-class EmployeeSerializer(serializers.ModelSerializer):
+class DepartmentSerializer(serializers.ModelSerializer):
     department_id = serializers.ReadOnlyField()
 
     def create(self, validated_data):
