@@ -13,10 +13,15 @@ class OrganizationView(views.APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request):
         try:
-            orgs = Organization.objects.filter(user=request.user)
+            org_id =request.GET.get('organization_id')
+            if org_id:
+              orgs = Organization.objects.filter(user=request.user,organization_id=org_id)
+            else:
+               orgs = Organization.objects.filter(user=request.user)
             serializer = OrganizationSerializer(orgs,many=True,context={'user':request.user}) 
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK) 
         except Exception as e:
+            print(e)
             return Response({"status":"internal-error","message":"An unexpected error occured"})
     def post(self, request):
       try:

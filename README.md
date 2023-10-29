@@ -33,6 +33,7 @@ Designing and developing an efficient employee management system is crucial for 
 
 - `/api/auth/register/` - POST
 - `/api/auth/token/` - POST
+- `/api/auth/verify/` - GET
 - `/api/organization/` GET
 - `/api/organization/create/` - POST
 - `/api/organization/update/` - PUT
