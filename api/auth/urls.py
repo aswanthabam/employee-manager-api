@@ -6,5 +6,6 @@ urlpatterns = [
     #path('auth/token', ObtainTokenView.as_view()),
     path('register/',UserView.as_view()),
     path('token/',ObtainTokenView.as_view()),
-    path('update/',UserView.as_view())
+    path('update/',UserView.as_view()),
+    path('verify/',VerificationView.as_view())
 ]

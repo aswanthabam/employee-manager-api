@@ -33,11 +33,14 @@ class UserView(views.APIView):
             else:  
                 return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST) 
         except Exception as e:
-
-            raise e
             return Response({"status":"internal-error","message":"An unexpected error occured"})
         
- 
+class VerificationView(views.APIView):
+    def get(self,request):
+        if request.user.is_authenticated:
+            return Response({"status":"success",'data':{'verified':True,'verified_as':request.user.username}})
+        else:
+            return Response({"status":"success",'data':{'verified':False}})
  
 # AUTHORIZATION: Bearer <TOKEN>
 class ObtainTokenView(views.APIView):
